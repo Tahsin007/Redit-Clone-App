@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:redit_clone/core/theme/app_pallete.dart';
 import 'package:redit_clone/core/theme/app_textStyles.dart';
+import 'package:redit_clone/features/Auth/view/widgets/app_button.dart';
 import 'package:redit_clone/features/Auth/view/widgets/text_field.dart';
 import 'package:redit_clone/features/Auth/view_model/auth_controller.dart';
 
@@ -48,57 +49,77 @@ class _SignInState extends ConsumerState<SignIn> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Dive Into Anything",
-                    style: AppTextStyle.h2.copyWith(
-                      color: AppPallete.primaryColor,
-                    ),
+                  "Dive Into Anything",
+                  style: AppTextStyle.h2.copyWith(
+                    color: AppPallete.primaryColor,
+                  ),
                   ),
                   const SizedBox(height: 20),
                   Image.asset(
-                    "assets/images/loginEmote.png",
-                    height: 200,
-                    width: 200,
+                  "assets/images/loginEmote.png",
+                  height: 200,
+                  width: 200,
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
-                    controller: _emailController,
-                    labelText: "Email",
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-                      if (!emailRegex.hasMatch(value)) {
-                        return 'Please enter a valid email';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  AppTextField(controller: _passwordController, labelText: "Password", validator: (value) {
-                    if(value==null || value.isEmpty){
-                      return 'Please enter your password';
+                  controller: _emailController,
+                  labelText: "Email",
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                    return 'Please enter your email';
                     }
-                    if(value.length<6){
-                      return 'Password must be at least 6 characters';
+                    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+                    if (!emailRegex.hasMatch(value)) {
+                    return 'Please enter a valid email';
                     }
                     return null;
-                  },),
+                  },
+                  ),
+                  SizedBox(height: 16),
+                  AppTextField(
+                  controller: _passwordController,
+                  labelText: "Password",
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                    }
+                    if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
+                  ),
                   const SizedBox(height: 24),
                   authController.isLoading
-                      ? const CircularProgressIndicator()
-                      : SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _signIn,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppPallete.primaryColor,
-                              foregroundColor: Colors.white, 
-                            ),
-                            child: const Text('Sign In'),
-                          ),
-                        ),
+                    ? const CircularProgressIndicator()
+                    : AppButton(
+                      label: "Sign In",
+                      onPressed: _signIn,
+                      isLoading: authController.isLoading,
+                      backgroundColor: AppPallete.primaryColor,
+                      foregroundColor: AppPallete.white,
+                    ),
+                  SizedBox(height: 20),
+                  Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Are you a new user? "),
+                    GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/sign-up');
+                    },
+                    child: Text(
+                      "Sign Up",
+                      style: TextStyle(
+                      color: AppPallete.primaryColor,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                      ),
+                    ),
+                    ),
+                  ],
+                  ),
                 ],
               ),
             ),

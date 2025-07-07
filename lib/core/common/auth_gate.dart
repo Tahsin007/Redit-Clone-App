@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:redit_clone/features/Auth/view/sign_in_view.dart';
+import 'package:redit_clone/features/Auth/view/sign_up_view.dart';
 import 'package:redit_clone/features/Home/view/home_view.dart';
 
 class AuthGate extends StatelessWidget {

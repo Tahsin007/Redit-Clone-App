@@ -15,12 +15,51 @@ class AuthController extends ChangeNotifier {
   Future<void> signInWithEmailPassword( String email, String password) async {
     _isLoading = true;
     notifyListeners();
-    try {
-      await _authRepository.signInWithEmailAndPassword(email, password);
-    } catch (e) {
-      // Handle error
-    }
-    _isLoading = false;
+    var user = await _authRepository.signInWithEmailAndPassword(email, password);
+    user.fold(
+      (l) {
+        // Handle error, e.g., show a message or log
+        _isLoading = false;
+        notifyListeners();
+        print(l.message);
+      },
+      (r) {
+        // Handle success, e.g., navigate or update state
+        _isLoading = false;
+        notifyListeners();
+        print(r.toString());
+      },
+    );
+  }
+
+  Future<void> signUpWithEmailPassword(String email, String password, String userName) async {
+    _isLoading = true;
     notifyListeners();
+    var user = await _authRepository.signUpWithEmailAndPassword(email, password, userName);
+    user.fold(
+      (l) {
+        // Handle error
+        _isLoading = false;
+        notifyListeners();
+        print(l.message);
+      },
+      (r) {
+        // Handle success
+        _isLoading = false;
+        notifyListeners();
+        print(r.toString());
+      },
+    );
+  }
+
+  Future<void> signOutUser() async{
+    var user = await _authRepository.signOut();
+    user.fold((onLeft){
+      print(onLeft.message);
+    }, (onRight){
+      print("Sign Out Successful");
+    });
   }
 }
+
+
