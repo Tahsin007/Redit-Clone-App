@@ -1,13 +1,27 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:redit_clone/core/models/user_model.dart';
 import 'package:redit_clone/features/Auth/repository/auth_repository.dart';
 
 final authControllerProvider = ChangeNotifierProvider((ref) => AuthController(auth_repository: ref.read(authRepoProvider)));
 
+final userProvider = StateProvider<UserModel?>((ref) => null);
+
+final authStateChangeProvider = StreamProvider((ref){
+  final authController = ref.watch(authControllerProvider);
+  return authController.authStateChange;
+});
+
+final getUserDataProvider = StreamProvider.family((ref,String uid){
+  final authController = ref.watch(authControllerProvider);
+  return authController.getUserData(uid);
+});
+
 class AuthController extends ChangeNotifier {
   final AuthRepository _authRepository;
-  AuthController({required AuthRepository auth_repository}):_authRepository=auth_repository;
+  AuthController({required AuthRepository auth_repository}) : _authRepository = auth_repository;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -60,6 +74,12 @@ class AuthController extends ChangeNotifier {
       print("Sign Out Successful");
     });
   }
+
+  Stream<UserModel> getUserData(String uid) {
+    return _authRepository.getUserData(uid);
+  }
+
+  Stream<User?> get authStateChange => _authRepository.authStateChange;
 }
 
 

@@ -3,6 +3,7 @@ import 'package:firebase_cloud_firestore/firebase_cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:redit_clone/core/constants/constants.dart';
+import 'package:redit_clone/core/constants/firebase_constants.dart';
 import 'package:redit_clone/core/models/user_model.dart';
 import 'package:redit_clone/core/providers/firebase_providers.dart';
 import 'package:redit_clone/core/utils/failure.dart';
@@ -16,6 +17,8 @@ class AuthRepository {
 
   AuthRepository({required FirebaseAuth auth, required FirebaseFirestore firestore}) : _auth = auth,_firestore=firestore;
 
+  Stream<User?> get authStateChange => _auth.authStateChanges();
+  
   FutureEither<UserModel> signInWithEmailAndPassword(String email, String password) async {
     try {
       var userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -23,7 +26,7 @@ class AuthRepository {
       if (user == null) {
         return left(Failure("User is not valid"));
       }
-      final userDoc = await _firestore.collection('users').doc(user.uid).get();
+      final userDoc = await _firestore.collection(FirebaseConstants.usersCollection).doc(user.uid).get();
       if (!userDoc.exists) {
         return left(Failure("User data not found in database"));
       }
@@ -64,5 +67,9 @@ class AuthRepository {
     } catch (e) {
       return left(Failure(e.toString()));
     }
+  }
+
+  Stream<UserModel> getUserData(String uid) {
+    return _firestore.collection(FirebaseConstants.usersCollection).doc(uid).snapshots().map((event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
   }
 }
