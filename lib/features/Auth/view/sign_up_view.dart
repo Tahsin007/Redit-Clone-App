@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:redit_clone/core/constants/constants.dart';
 import 'package:redit_clone/core/theme/app_pallete.dart';
 import 'package:redit_clone/core/theme/app_textStyles.dart';
@@ -7,14 +8,14 @@ import 'package:redit_clone/features/Auth/view/widgets/app_button.dart';
 import 'package:redit_clone/features/Auth/view/widgets/text_field.dart';
 import 'package:redit_clone/features/Auth/view_model/auth_controller.dart';
 
-class SignUpView extends ConsumerStatefulWidget {
-  const SignUpView({ super.key });
+class SignUp extends ConsumerStatefulWidget {
+  const SignUp({super.key});
 
   @override
-  ConsumerState<SignUpView> createState() => _SignUpViewState();
+  ConsumerState<SignUp> createState() => _SignUpState();
 }
 
-class _SignUpViewState extends ConsumerState<SignUpView> {
+class _SignUpState extends ConsumerState<SignUp> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -28,20 +29,19 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
     super.dispose();
   }
 
-  void _signUp() async {
-    if(_formKey.currentState!.validate()){
-      final authController = ref.read(authControllerProvider);
-      await authController.signUpWithEmailPassword(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-        _userNameController.text.trim()
-      );
+  void _signUp() {
+    if (_formKey.currentState!.validate()) {
+      ref.read(authControllerProvider.notifier).signUpWithEmailPassword(
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+            _userNameController.text.trim(),
+          );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authController = ref.watch(authControllerProvider);
+    final isLoading = ref.watch(authControllerProvider).isLoading;
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -52,37 +52,88 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
               key: _formKey,
               child: Column(
                 children: [
-                  Image.asset(Constants.logoPath,height: 80,),
-                  SizedBox(height: 20,),
-                  Text("User Sign Up",style: AppTextStyle.h2,),
-                  SizedBox(height: 20,),
+                  Image.asset(
+                    Constants.logoPath,
+                    height: 80,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "User Sign Up",
+                    style: AppTextStyle.h2,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   AppTextField(controller: _userNameController, labelText: "User Name"),
-                  SizedBox(height: 15,),
-                  AppTextField(controller: _emailController, labelText: "Email",validator: (value) {
-                    if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                    }
-                    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-                    if (!emailRegex.hasMatch(value)) {
-                    return 'Please enter a valid email';
-                    }
-                    return null;
-                  },keyboardType: TextInputType.emailAddress,),
-                  SizedBox(height: 15,),
-                  AppTextField(controller: _passwordController, labelText: "Password",validator: (value) {
-                    if(value==null || value.isEmpty){
-                      return "Please enter Your Password";
-                    }
-                    if(value.length <6){
-                      return "Password must be 6 characters minimum";
-                    }
-                    return null;
-                  }, ),
-                  SizedBox(height: 20,),
-                  authController.isLoading
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  AppTextField(
+                    controller: _emailController,
+                    labelText: "Email",
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+                      if (!emailRegex.hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  AppTextField(
+                    controller: _passwordController,
+                    labelText: "Password",
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter Your Password";
+                      }
+                      if (value.length < 6) {
+                        return "Password must be 6 characters minimum";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  isLoading
                       ? const CircularProgressIndicator()
-                      : AppButton(label: "Sign Up", onPressed: _signUp, isLoading: authController.isLoading,backgroundColor: AppPallete.primaryColor,foregroundColor: AppPallete.white,)
-              
+                      : AppButton(
+                          label: "Sign Up",
+                          onPressed: _signUp,
+                          isLoading: isLoading,
+                          backgroundColor: AppPallete.primaryColor,
+                          foregroundColor: AppPallete.white,
+                        ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Already have an account? "),
+                      GestureDetector(
+                        onTap: () {
+                          context.go('/login');
+                        },
+                        child: Text(
+                          "Sign In",
+                          style: TextStyle(
+                            color: AppPallete.primaryColor,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
