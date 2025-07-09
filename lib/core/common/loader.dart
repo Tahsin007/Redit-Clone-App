@@ -5,6 +5,8 @@ const AppLoader({ Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context){
-    return CircularProgressIndicator();
+    return Center(
+      child: CircularProgressIndicator(),
+    );
   }
 }

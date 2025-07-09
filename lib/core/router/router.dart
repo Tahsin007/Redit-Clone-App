@@ -5,10 +5,11 @@ import 'package:redit_clone/features/Auth/view/sign_in_view.dart';
 import 'package:redit_clone/features/Auth/view/sign_up_view.dart';
 import 'package:redit_clone/features/Auth/view_model/auth_controller.dart';
 import 'package:redit_clone/features/Home/view/home_view.dart';
+import 'package:redit_clone/features/community/create_community.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateChangeProvider);
-  
+
   return GoRouter(
     initialLocation: '/',
     routes: [
@@ -27,9 +28,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'signup',
         builder: (context, state) => const SignUp(),
       ),
+      GoRoute(
+        path: '/community',
+        name: 'community',
+        builder: (context, state) => const CreateCommunity(),
+      ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
-      final bool loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/signup';
+      final bool loggingIn =
+          state.matchedLocation == '/login' ||
+          state.matchedLocation == '/signup';
 
       if (authState.isLoading || authState.hasError) {
         return null;
@@ -49,5 +57,3 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
   );
 });
-
-
