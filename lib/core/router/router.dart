@@ -5,7 +5,7 @@ import 'package:redit_clone/features/Auth/view/sign_in_view.dart';
 import 'package:redit_clone/features/Auth/view/sign_up_view.dart';
 import 'package:redit_clone/features/Auth/view_model/auth_controller.dart';
 import 'package:redit_clone/features/Home/view/home_view.dart';
-import 'package:redit_clone/features/community/create_community.dart';
+import 'package:redit_clone/features/Community/create_community.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateChangeProvider);

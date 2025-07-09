@@ -37,7 +37,7 @@ class _SignInState extends ConsumerState<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authControllerProvider).isLoading;
+    final isLoading = ref.watch(authControllerProvider);
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(

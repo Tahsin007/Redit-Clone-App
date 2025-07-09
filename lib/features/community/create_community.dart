@@ -4,7 +4,7 @@ import 'package:redit_clone/core/common/loader.dart';
 import 'package:redit_clone/core/theme/app_pallete.dart';
 import 'package:redit_clone/features/Auth/view/widgets/app_button.dart';
 import 'package:redit_clone/features/Auth/view/widgets/text_field.dart';
-import 'package:redit_clone/features/community/controller/community_controller.dart';
+import 'package:redit_clone/features/Community/controller/community_controller.dart';
 
 class CreateCommunity extends ConsumerStatefulWidget {
   const CreateCommunity({super.key});

@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:redit_clone/core/common/error.dart';
 import 'package:redit_clone/core/common/loader.dart';
 import 'package:redit_clone/features/Auth/view_model/auth_controller.dart';
-import 'package:redit_clone/features/Home/widgets/drawer.dart';
+import 'package:redit_clone/features/Community/widgets/drawer.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
   void _signOut(WidgetRef ref) async {
-    ref.read(authControllerProvider.notifier).signOutUser();
+    ref.read(authControllerProvider.notifier).signOut();
   }
 
   void displayDrawer(BuildContext context) {
